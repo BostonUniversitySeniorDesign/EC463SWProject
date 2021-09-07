@@ -1,0 +1,8 @@
+ok, so when the barcode reader gets the FDC_ID, do this:
+
+at the top:
+import fdaapi from '.FDAAPI.tsx'
+
+
+in the code:
+<Text> This item contains {fdaapi.functions.getCalories(FDC_ID)} kCal </Text>
