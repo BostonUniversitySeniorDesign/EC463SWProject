@@ -5,6 +5,7 @@ import axios from 'axios';
 class FDAAPI
 {
 	static kCalServing = 0;
+	static itemName = "No Item";
 	static status = "No Barcode";
 }
 
@@ -35,11 +36,15 @@ FDAAPI.parseJson = function(data)
 		
 	if(this.kCalServing == 0)
 		throw("Error: No Calorie Data Found");
+	
+	this.itemName = data.foods[0].description;
 	this.status = "Query Complete";
 }
 
 FDAAPI.getCalories = function(servings)
 {
+	console.log(this.itemName + ", " + this.kCalServing);
+	
 	var message = "";
 	
 	if(this.status == "Query Complete")
@@ -47,9 +52,26 @@ FDAAPI.getCalories = function(servings)
 	else
 		message =this.status;
 	
-	this.kCalServing = 0;
-	this.status = "No Barcode";
 	return message;
+}
+
+FDAAPI.getItemName = function()
+{
+	var message = "";
+	
+	if(this.status == "Query Complete")
+		message = this.itemName;
+	else
+		message =this.status;
+	
+	return message;
+}
+
+FDAAPI.clear = function()
+{
+	this.kCalServing = 0;
+	this.itemName = "No Item";
+	this.status = "No Barcode";
 }
 
 module.exports = {
