@@ -1,7 +1,8 @@
 import {StatusBar} from 'expo-status-bar'
 import React from 'react'
-import {StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Alert} from 'react-native'
+import {StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Alert, Button} from 'react-native'
 import {Camera} from 'expo-camera'
+import { BarCodeScanner } from 'expo-barcode-scanner';
 let camera: Camera
 
 
@@ -9,9 +10,11 @@ let camera: Camera
 export default function App() {
   
   const [startCamera,setStartCamera] = React.useState(false);
+  const [scanned, setScanned] = React.useState(false);
+  const [text, setText] = React.useState('Not yet scanned')
 
   const __startCamera = async () => {
-    const {status} = await Camera.requestPermissionsAsync()
+    const {status} = await BarCodeScanner.requestPermissionsAsync()
     if (status === 'granted') {
       // start the camera
       setStartCamera(true)
@@ -20,15 +23,28 @@ export default function App() {
     }
   }
 
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+    setText(data)
+    console.log('Type: ' + type + '\nData: ' + data)
+  }
+
   return (
     <View style={styles.container}>
     {startCamera ? (
-        <Camera
-          style={{flex: 1,width:"100%"}}
-          ref={(r) => {
-            camera = r
-          }}
-        ></Camera>
+      <View style={styles.container}>
+        <View 
+          style={styles.barcodebox}>
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            style={{ height: 400, width: 400 }} />
+        </View>
+        <Text style={styles.maintext}>{text}</Text>
+
+      {scanned && <Button 
+        title='Scan again?' 
+        onPress={() => setScanned(false)} color='#dc143c' />}
+    </View>
       ) : (
       <View
         style={{
@@ -57,7 +73,7 @@ export default function App() {
               textAlign: 'center'
             }}
           >
-            Take picture
+          Scan Barcode 
           </Text>
         </TouchableOpacity>
 
@@ -100,6 +116,19 @@ export default function App() {
 
 
 const styles = StyleSheet.create({
+  maintext: {
+    fontSize: 30,
+    margin: 20,
+  },
+  barcodebox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 400,
+    width: 350,
+    overflow: 'hidden',
+    borderRadius: 2,
+    backgroundColor: '#000'
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -107,7 +136,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   space: {
-    width: 20, // or whatever size you need
+    width: 20, 
     height: 20,
-  },
+  }
 })
