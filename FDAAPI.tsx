@@ -4,13 +4,13 @@ import axios from 'axios';
 
 class FDAAPI
 {
-	static calories = "No Barcode";
-	static data = "No Data";
+	static kCalServing = 0;
+	static status = "No Barcode";
 }
 
 FDAAPI.parseBarcode = function(FDC_ID)
 {
-	this.calories = "Error: Still Fetching Data";
+	this.status = "Error: Still Fetching Data";
 	axios.post
 	(
 		'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=cut3y5UH1MWJYdvRtN3gz74DT1YOxRvprPLWCdA1',
@@ -22,23 +22,34 @@ FDAAPI.parseBarcode = function(FDC_ID)
 	})
 	.catch(function(error)
 	{
+		this.status = "Error: Bad Read"
 		alert(error.message);
 	});
 }
 
 FDAAPI.parseJson = function(data)
 {
-	console.log(data);
-	this.data = "data";
-	this.calories = "kCal";
+	for(let i = 0; i < data.foods[0].foodNutrients.length; i++)
+		if(data.foods[0].foodNutrients[i].nutrientName == "Energy")
+			this.kCalServing = data.foods[0].foodNutrients[i].value;
+		
+	if(this.kCalServing == 0)
+		throw("Error: No Calorie Data Found");
+	this.status = "Query Complete";
 }
 
-FDAAPI.getCalories = function()
+FDAAPI.getCalories = function(servings)
 {
-	const cal = this.calories;
-	this.calories = "No Barcode";
-	this.data = "No Data";
-	return cal;
+	var message = "";
+	
+	if(this.status == "Query Complete")
+		message = (this.kCalServing*servings) + "kCal";
+	else
+		message =this.status;
+	
+	this.kCalServing = 0;
+	this.status = "No Barcode";
+	return message;
 }
 
 module.exports = {
