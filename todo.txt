@@ -6,3 +6,9 @@ import fdaapi from './FDAAPI.tsx'
 
 in the code:
 <Text> This item contains {fdaapi.functions.getCalories(FDC_ID)} kCal </Text>
+
+
+
+
+for firebase
+npm install --save firebase
