@@ -1,6 +1,6 @@
 import React from 'react';
 import {db} from './src/config';
-import {ref, set} from '@react-native-firebase/database';
+import firebase from 'firebase';
 
 class Database
 {
@@ -44,10 +44,7 @@ Database.uploadRecipe = function()
 {
 	this.recipe += "Total:\n\t" +this.totalkCal;
 	
-	set(ref(db, 'recipes/' + this.username + this.recipeName),
-	{
-		recipe: this.recipe
-	});
+	db.ref('recipes/' + this.username + this.recipeName).set({recipe: this.recipe});
 	
 	this.recipeName = "Default";
 	this.recipe = "";
@@ -56,10 +53,15 @@ Database.uploadRecipe = function()
 
 Database.readRecipe = function(recipeName)
 {
-	db.ref(db, 'recipes/' + this.username + this.recipeName)
+	/*db.ref(db, 'recipes/' + this.username + this.recipeName)
 	.once('value')
 	.then(snapshot =>{
 		return snapshot.val();
+	});*/
+	
+	var recipeRef = db.ref('recipes/' + this.username + this.recipeName);
+	recipeRef.on('value', (snapshot) => {
+		return snapshot.val().recipe;
 	});
 }
 
