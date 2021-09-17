@@ -26,7 +26,7 @@ function HomeScreen({ navigation }) {
       <Button
         title="Log In"
         // enter username and then send it to database
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => {navigation.navigate('Home'); database.functions.login(username);}}
       />
       <Text> Username: {username} </Text>
     </SafeAreaView>
@@ -139,10 +139,10 @@ function CameraScreen() {
 
         <Button 
           title = "Go"
-          onPress = {()=> database.functions.addIngredient(fdaapi.functions.getItemName(),fdaapi.functions.getCalories(Number(servingsize)))}
+          onPress = {()=> {database.functions.addIngredient(fdaapi.functions.getItemName(),fdaapi.functions.getCalories(Number(servingsize))); fdaapi.functions.clear();}}
         />
 
-        <Text> {serving size) of this item contains {fdaapi.functions.getCalories(Number(servingsize))} </Text>
+        <Text> {servingsize} of this item contains {fdaapi.functions.getCalories(Number(servingsize))} </Text>
 
     </View>
 
@@ -161,7 +161,7 @@ function CameraScreen() {
         style={styles.input}
         //name to save into recipes 
         placeholder="Enter name of recipe"
-        onChangeText = {(val) => setNewRecipe(val)}
+        onChangeText = {(val) => {setNewRecipe(val); database.functions.addRecipe(newRecipe);}}
 
       />
         <TouchableOpacity

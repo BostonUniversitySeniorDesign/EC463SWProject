@@ -21,7 +21,7 @@ Database.logout = function()
 
 Database.addRecipe = function(recipeName)
 {
-	if(username == "Default")
+	if(this.username == "Default")
 		throw("Error: not logged in");
 	
 	this.recipeName = recipeName;
