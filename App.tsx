@@ -119,6 +119,10 @@ function CameraScreen() {
     <View style={styles.container}>
     {startCamera ? (
       <View style={styles.container}>
+        <Button
+        title = "Upload Recipe"
+        onPress = {()=> {database.functions.uploadRecipe(); navigation.navigate('Home');}}
+        />
         <View style={styles.barcodebox}>
           <BarCodeScanner
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
