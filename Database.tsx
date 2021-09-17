@@ -60,14 +60,20 @@ Database.readRecipe = function(recipeName)
 		return snapshot.val().recipe;
 	});*/
 	
-	db.ref('recipes/' + this.username + this.recipeName).get().then((snapshot) => {
-		if(snapshot.exists())
-			return "Error: Invalid Recipe";
+	
+	this.recipe = "Error: Still Loading Recipe";
+	db.ref('recipes/' + this.username + recipeName).get().then((snapshot) => {
+		if(!snapshot.exists())
+			this.recipe = "Error: Invalid Recipe";
 		else
-			return snapshot.val().recipe;
+			this.recipe = snapshot.val().recipe;
 	});
 }
 
+Database.getRecipe() = function()
+{
+	return recipe;
+}
 
 module.exports = {
 	functions: Database
