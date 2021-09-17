@@ -70,9 +70,9 @@ Database.readRecipe = function(recipeName)
 	});
 }
 
-Database.getRecipe() = function()
+Database.getRecipe = function()
 {
-	return recipe;
+	return this.recipe;
 }
 
 module.exports = {
