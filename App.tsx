@@ -111,7 +111,7 @@ function CameraScreen() {
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setText(data)
-    console.log('Type: ' + type + '\nData: ' + data)
+    fdaapi.functions.parseBarcode('872181000069');
 
 
   }
@@ -119,24 +119,20 @@ function CameraScreen() {
     <View style={styles.container}>
     {startCamera ? (
       <View style={styles.container}>
-      <Text> Recipe Name </Text>
-
-      <TextInput
-        style={styles.input}
-        //name to save into recipes 
-        placeholder="Enter name of recipe"
-        onChangeText = {(val) => setNewRecipe(val)}
-
-      />
       <Text> Serving Size </Text>
 
       <TextInput
-        keyboardType = 'numeric'
+        //keyboardType = 'numeric'
         style={styles.input}
         //the number they put is what we send to multiply by to get total calories
         placeholder="Number of Servings"
         onChangeText = {(val) => setServingsize(val)}
       />
+
+      <Button 
+        title = "Go"
+        //onPress = 
+        />
         <View 
           style={styles.barcodebox}>
           <BarCodeScanner
@@ -146,7 +142,10 @@ function CameraScreen() {
         <Text style={styles.maintext}>{text}</Text>
 
 
-        <Text> This item contains {fdaapi.functions.getCalories({text})} kCal </Text>
+        
+
+
+        <Text> This item contains {fdaapi.functions.getCalories({servingsize})} kCal </Text>
 
 
         
@@ -167,6 +166,14 @@ function CameraScreen() {
           alignItems: 'center'
         }}
       >
+      <Text> Name of Recipe </Text>
+      <TextInput
+        style={styles.input}
+        //name to save into recipes 
+        placeholder="Enter name of recipe"
+        onChangeText = {(val) => setNewRecipe(val)}
+
+      />
         <TouchableOpacity
           onPress={__startCamera}
           style={{
@@ -186,9 +193,10 @@ function CameraScreen() {
               textAlign: 'center'
             }}
           >
-          Start Scanning 
+          Add Ingredient 
           </Text>
         </TouchableOpacity>
+
       </View>
     )}
       <StatusBar style="auto" />
