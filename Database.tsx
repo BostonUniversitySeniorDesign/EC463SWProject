@@ -53,14 +53,9 @@ Database.uploadRecipe = function()
 
 Database.readRecipe = function(recipeName)
 {
-	/*db.ref(db, 'recipes/' + this.username + this.recipeName)
+	db.ref('recipes/' + this.username + this.recipeName)
 	.once('value')
 	.then(snapshot =>{
-		return snapshot.val();
-	});*/
-	
-	var recipeRef = db.ref('recipes/' + this.username + this.recipeName);
-	recipeRef.on('value', (snapshot) => {
 		return snapshot.val().recipe;
 	});
 }
