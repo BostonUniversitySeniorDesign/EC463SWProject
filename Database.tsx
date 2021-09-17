@@ -53,10 +53,18 @@ Database.uploadRecipe = function()
 
 Database.readRecipe = function(recipeName)
 {
+	/*
 	db.ref('recipes/' + this.username + this.recipeName)
 	.once('value')
 	.then(snapshot =>{
 		return snapshot.val().recipe;
+	});*/
+	
+	db.ref('recipes/' + this.username + this.recipeName).get().then((snapshot) => {
+		if(snapshot.exists())
+			return "Error: Invalid Recipe";
+		else
+			return snapshot.val().recipe;
 	});
 }
 
