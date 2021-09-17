@@ -8,7 +8,7 @@ import {Camera} from 'expo-camera'
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 import fdaapi from './FDAAPI.tsx'
-
+import database from './Database.tsx'
 
 
 // this is for the log in screen 
@@ -25,14 +25,13 @@ function HomeScreen({ navigation }) {
       />
       <Button
         title="Log In"
-        //need a if statement for searching for name in the usernames and if it exists let on press work, if not then error message 
+        // enter username and then send it to database
         onPress={() => navigation.navigate('Home')}
       />
       <Text> Username: {username} </Text>
     </SafeAreaView>
   );
 }
-
 
 
 
@@ -111,7 +110,8 @@ function CameraScreen() {
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setText(data)
-    fdaapi.functions.parseBarcode('872181000069');
+    barcode = data.substring(1, data.length)
+    fdaapi.functions.parseBarcode(barcode);
 
 
   }
@@ -119,40 +119,30 @@ function CameraScreen() {
     <View style={styles.container}>
     {startCamera ? (
       <View style={styles.container}>
-      <Text> Serving Size </Text>
-
-      <TextInput
-        //keyboardType = 'numeric'
-        style={styles.input}
-        //the number they put is what we send to multiply by to get total calories
-        placeholder="Number of Servings"
-        onChangeText = {(val) => setServingsize(val)}
-      />
-
-      <Button 
-        title = "Go"
-        //onPress = 
-        />
-        <View 
-          style={styles.barcodebox}>
+        <View style={styles.barcodebox}>
           <BarCodeScanner
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={{ height: 400, width: 400 }} />
         </View>
-        <Text style={styles.maintext}>{text}</Text>
-
-
-        
-
-
-        <Text> This item contains {fdaapi.functions.getCalories({servingsize})} kCal </Text>
-
-
-        
-      
-      {scanned && <Button 
+        {scanned && <Button 
         title='Scan again?' 
         onPress={() => setScanned(false)} color='#dc143c' />}
+        <Text> Serving Size </Text>
+
+        <TextInput
+        //keyboardType = 'numeric'
+          style={styles.input}
+        //the number they put is what we send to multiply by to get total calories
+          placeholder="Number of Servings"
+          onChangeText = {(val) => setServingsize(val)}
+        />
+
+        <Button 
+          title = "Go"
+          onPress = {()=> database.functions.addIngredient(fdaapi.functions.getItemName(),fdaapi.functions.getCalories(Number(servingsize)))}
+        />
+
+        <Text> This item contains {fdaapi.functions.getCalories(Number(servingsize))} </Text>
 
     </View>
 
