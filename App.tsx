@@ -1,18 +1,102 @@
+//import * as React from 'react';
 import {StatusBar} from 'expo-status-bar'
 import React from 'react'
-import {StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Alert, Button} from 'react-native'
+import {StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Alert, Button, TextInput} from 'react-native'
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {Camera} from 'expo-camera'
 import { BarCodeScanner } from 'expo-barcode-scanner';
-let camera: Camera
+
+import fdaapi from './FDAAPI.tsx'
 
 
 
-export default function App() {
-  
+// this is for the log in screen 
+function HomeScreen({ navigation }) {
+  const [username, setUsername] = React.useState(null)
+
+  return (
+    <SafeAreaView>
+      <Text> Enter Username</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g scuterez"
+        onChangeText = {(val) => setUsername(val)}
+      />
+      <Button
+        title="Log In"
+        //need a if statement for searching for name in the usernames and if it exists let on press work, if not then error message 
+        onPress={() => navigation.navigate('Home')}
+      />
+      <Text> Username: {username} </Text>
+    </SafeAreaView>
+  );
+}
+
+
+
+
+
+//this is for the screen after the log in where the user chooses to put in a new recipe or search for an existing one
+function DetailsScreen({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+    <View>
+      <Button
+        title="Start New Recipe"
+        onPress={() => navigation.navigate('Camera')}
+      />
+    </View>
+    <View>
+      <Button
+        title="Saved Recipes"
+        color="#f194ff"
+        onPress={() => navigation.navigate('Recipes Saved')}
+      />
+    </View>
+  </SafeAreaView>
+  );
+}
+
+
+
+
+function RecipesSavedScreen() {
+
+  const [SavedRecipe, setSavedRecipe] = React.useState(null)
+  return (
+
+
+    <SafeAreaView>
+      <Text> Enter Recipe Name </Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g Spaghetti"
+        onChangeText = {(val) => setSavedRecipe(val)}
+        //need to make the app find the recipe to see if it already exist and then print out the information 
+      />
+      <Button
+        title="Find Recipe" 
+      />
+    </SafeAreaView>
+  );
+}
+
+
+
+
+
+
+
+function CameraScreen() {
   const [startCamera,setStartCamera] = React.useState(false);
   const [scanned, setScanned] = React.useState(false);
   const [text, setText] = React.useState('Not yet scanned')
+  const [newRecipe, setNewRecipe] = React.useState(null)
+  const [servingsize, setServingsize] = React.useState(null)
+  
 
+  // this is for camera permission and to start the camera when its pressed
   const __startCamera = async () => {
     const {status} = await BarCodeScanner.requestPermissionsAsync()
     if (status === 'granted') {
@@ -23,16 +107,36 @@ export default function App() {
     }
   }
 
+  // this is to scan and get the number
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setText(data)
     console.log('Type: ' + type + '\nData: ' + data)
-  }
 
+
+  }
   return (
     <View style={styles.container}>
     {startCamera ? (
       <View style={styles.container}>
+      <Text> Recipe Name </Text>
+
+      <TextInput
+        style={styles.input}
+        //name to save into recipes 
+        placeholder="Enter name of recipe"
+        onChangeText = {(val) => setNewRecipe(val)}
+
+      />
+      <Text> Serving Size </Text>
+
+      <TextInput
+        keyboardType = 'numeric'
+        style={styles.input}
+        //the number they put is what we send to multiply by to get total calories
+        placeholder="Number of Servings"
+        onChangeText = {(val) => setServingsize(val)}
+      />
         <View 
           style={styles.barcodebox}>
           <BarCodeScanner
@@ -41,10 +145,19 @@ export default function App() {
         </View>
         <Text style={styles.maintext}>{text}</Text>
 
+
+        <Text> This item contains {fdaapi.functions.getCalories({text})} kCal </Text>
+
+
+        
+      
       {scanned && <Button 
         title='Scan again?' 
         onPress={() => setScanned(false)} color='#dc143c' />}
+
     </View>
+
+
       ) : (
       <View
         style={{
@@ -73,51 +186,47 @@ export default function App() {
               textAlign: 'center'
             }}
           >
-          Scan Barcode 
-          </Text>
-        </TouchableOpacity>
-
-        <View style={styles.space} />
-
-        <TouchableOpacity
-          onPress={() => Alert.alert('Going to recipes')}
-          style={{
-            width: 200,
-            borderRadius: 1,
-            backgroundColor: '#000',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 50
-
-
-          }}
-        >
-          <Text
-            style={{
-              color: '#fff',
-              fontWeight: 'bold',
-              textAlign: 'center'
-            }}
-          >
-            Recipes
+          Start Scanning 
           </Text>
         </TouchableOpacity>
       </View>
     )}
-
       <StatusBar style="auto" />
     </View>
   )
 }
 
+const Stack = createNativeStackNavigator();
 
-
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Log In">
+        <Stack.Screen name="Log In" component={HomeScreen} />
+        <Stack.Screen name="Home" component={DetailsScreen} />
+        <Stack.Screen name ="Camera" component ={CameraScreen}/>
+        <Stack.Screen name = "Recipes Saved" component = {RecipesSavedScreen}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 
 const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   maintext: {
-    fontSize: 30,
+    fontSize: 20,
     margin: 20,
   },
   barcodebox: {
@@ -129,14 +238,12 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: '#000'
   },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   space: {
     width: 20, 
     height: 20,
   }
 })
+
+
+
+
