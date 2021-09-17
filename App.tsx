@@ -28,7 +28,6 @@ function HomeScreen({ navigation }) {
         // enter username and then send it to database
         onPress={() => {navigation.navigate('Home'); database.functions.login(username);}}
       />
-      <Text> Username: {username} </Text>
     </SafeAreaView>
   );
 }
@@ -76,7 +75,8 @@ function RecipesSavedScreen() {
       />
       <Button
         title="Find Recipe" 
-      />
+        onPress = {()=> database.functions.readRecipe(SavedRecipe)}
+      />   
     </SafeAreaView>
   );
 }
@@ -121,7 +121,7 @@ function CameraScreen() {
       <View style={styles.container}>
         <Button
         title = "Upload Recipe"
-        onPress = {()=> {database.functions.uploadRecipe(); navigation.navigate('Home');}}
+        onPress = {()=>database.functions.uploadRecipe()}        
         />
         <View style={styles.barcodebox}>
           <BarCodeScanner
