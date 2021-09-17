@@ -1,5 +1,6 @@
 import React from 'react';
 import {db} from './src/config';
+import {ref, set} from '@react-native-firebase/database';
 
 class Database
 {
@@ -41,7 +42,7 @@ Database.addIngredient = function(name, kCals)
 
 Database.uploadRecipe = function()
 {
-	this.recipe += "Total:\n\t" + totalkCal;
+	this.recipe += "Total:\n\t" +this.totalkCal;
 	
 	set(ref(db, 'recipes/' + this.username + this.recipeName),
 	{
