@@ -45,7 +45,7 @@ Database.uploadRecipe = function()
 	
 	set(ref(db, 'recipes/' + this.username + this.recipeName),
 	{
-		recipe: this.recipe;
+		recipe: this.recipe
 	});
 	
 	this.recipeName = "Default";
