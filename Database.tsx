@@ -30,9 +30,9 @@ Database.addRecipe = function(recipeName)
 
 Database.addIngredient = function(name, kCals)
 {
-	if(username == "Default")
+	if(this.username == "Default")
 		throw("Error: not logged in");
-	if(recipeName == "Default")
+	if(this.recipeName == "Default")
 		throw("Error: no working recipe");
 	
 	this.recipe += name + "\n\t" + kCals + "\n";
