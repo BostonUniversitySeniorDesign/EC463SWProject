@@ -77,6 +77,13 @@ function RecipesSavedScreen() {
         title="Find Recipe" 
         onPress = {()=> database.functions.readRecipe(SavedRecipe)}
       />   
+      <Button
+        title="Load Recipe" 
+        onPress = {()=> Alert.alert(database.functions.getRecipe()) }
+      />   
+
+      <Text> {database.functions.getRecipe()} </Text>
+
     </SafeAreaView>
   );
 }
