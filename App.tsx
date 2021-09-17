@@ -142,7 +142,7 @@ function CameraScreen() {
           onPress = {()=> database.functions.addIngredient(fdaapi.functions.getItemName(),fdaapi.functions.getCalories(Number(servingsize)))}
         />
 
-        <Text> This item contains {fdaapi.functions.getCalories(Number(servingsize))} </Text>
+        <Text> {serving size) of this item contains {fdaapi.functions.getCalories(Number(servingsize))} </Text>
 
     </View>
 
