@@ -37,7 +37,7 @@ Database.addIngredient = function(name, kCals)
 		throw("Error: no working recipe");
 	
 	this.recipe += name + "\n\t" + kCals + "\n";
-	this.totalkCal += kCals;
+	this.totalkCal += Number(kCals);
 }
 
 Database.uploadRecipe = function()
