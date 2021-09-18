@@ -18,3 +18,7 @@ npm install @react-navigation/native @react-navigation/native-stack
 Installation for axios:
 
 npm install axios
+
+Once those packages are installed, the app can be launched. 
+
+The first screen that users will see will be 
