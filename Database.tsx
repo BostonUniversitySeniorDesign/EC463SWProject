@@ -10,16 +10,19 @@ class Database
 	static totalkCal = 0;
 }
 
+//Rudimentary login function; simply using a username
 Database.login = function(username)
 {
 	this.username = username;
 }
 
+//And a Rudimentary logout function
 Database.logout = function()
 {
 	this.username = "Default";
 }
 
+//Takes a recipe name and starts a new recipe string
 Database.addRecipe = function(recipeName)
 {
 	if(this.username == "Default")
@@ -29,6 +32,7 @@ Database.addRecipe = function(recipeName)
 	this.recipe = recipeName + ":\n";
 }
 
+//Concatenates ingredient data to the recipe string
 Database.addIngredient = function(name, kCals)
 {
 	if(this.username == "Default")
@@ -40,6 +44,7 @@ Database.addIngredient = function(name, kCals)
 	this.totalkCal += Number(kCals);
 }
 
+//Finishes off the recipe total calorie count and uploads it to firebase
 Database.uploadRecipe = function()
 {
 	this.recipe += "Total:\n\t" +this.totalkCal;
@@ -51,16 +56,9 @@ Database.uploadRecipe = function()
 	this.totalkCal = 0;
 }
 
+//Downloads recipe Json from firebase and extracts the recipe string
 Database.readRecipe = function(recipeName)
 {
-	/*
-	db.ref('recipes/' + this.username + this.recipeName)
-	.once('value')
-	.then(snapshot =>{
-		return snapshot.val().recipe;
-	});*/
-	
-	
 	this.recipe = "Error: Still Loading Recipe";
 	db.ref('recipes/' + this.username + recipeName).get().then((snapshot) => {
 		if(!snapshot.exists())
@@ -70,6 +68,8 @@ Database.readRecipe = function(recipeName)
 	});
 }
 
+//Returns the current state of the recipe, either while being built or
+//after being downloaded and parsed from firebase
 Database.getRecipe = function()
 {
 	return this.recipe;

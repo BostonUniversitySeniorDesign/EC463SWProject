@@ -8,6 +8,7 @@ class FDAAPI
 	static status = "No Barcode";
 }
 
+//Downloads a .json from the FDA with the given barcode information; calls helper parseJson()
 FDAAPI.parseBarcode = function(FDC_ID)
 {
 	this.status = "Error: Still Fetching Data";
@@ -27,6 +28,7 @@ FDAAPI.parseBarcode = function(FDC_ID)
 	});
 }
 
+//Parses Json from the FDA for calorie/serving count & item name
 FDAAPI.parseJson = function(data)
 {
 	for(let i = 0; i < data.foods[0].foodNutrients.length; i++)
@@ -40,6 +42,7 @@ FDAAPI.parseJson = function(data)
 	this.status = "Query Complete";
 }
 
+//Returns the number of calories in a given number of servings
 FDAAPI.getCalories = function(servings)
 {
 	console.log(this.itemName + ", " + this.kCalServing);
@@ -54,6 +57,7 @@ FDAAPI.getCalories = function(servings)
 	return message;
 }
 
+//Returns the item name
 FDAAPI.getItemName = function()
 {
 	var message = "";
@@ -66,6 +70,7 @@ FDAAPI.getItemName = function()
 	return message;
 }
 
+//Clears the kCal & name fields in preperation for new incoming data
 FDAAPI.clear = function()
 {
 	this.kCalServing = 0;
